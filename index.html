@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]> <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8" />
+
+  <!-- Set the viewport width to device width for mobile -->
+  <meta name="viewport" content="width=device-width" />
+
+  <title>PT-App</title>
+  <meta name="description" content="A project management web app based on the Pomodoro Technique." />
+  
+  <!-- Included CSS Files (Uncompressed) -->
+  <link rel="stylesheet" href="assets/css/foundation.css" />
+  <link rel="stylesheet" href="assets/css/jquery.datepick.css" />
+  <link rel="stylesheet" href="assets/css/jquery.validity.css" />
+  <link rel="stylesheet" href="assets/css/app.css" />
+
+  <!-- IE Fix for HTML5 Tags -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+</head>
+<body>  
+	<nav class="row">
+	  <ul class="nav-bar twelve columns">
+	  	<li><a href="#today">To Do Today</a></li>
+		  <li class="has-flyout">
+		    <a href="#" class="nowhere">Projects</a>
+		    <a href="#" class="flyout-toggle"><span> </span></a>
+		    <ul class="flyout">
+		      <li><a href="#proj_all">View All</a></li>
+		      <li><a href="#proj_new">New Project</a></li>
+		    </ul>
+		  </li>
+		  <li class="has-flyout">
+		    <a href="#" class="nowhere">Tasks</a>
+		    <a href="#" class="flyout-toggle"><span> </span></a>
+		    <ul class="flyout">
+		      <li><a href="#task_all">View All</a></li>
+		      <li><a href="#task_new">New Task</a></li>
+		    </ul>
+		  </li>
+		  <li><a href="#reports">Reports</a></li>
+		  <li><a href="#settings">Settings</a></li>
+		  <li class="has-flyout">
+		    <a href="#" class="nowhere">Pomodoro: <span id="timer">None</span></a>
+		    <a href="#" class="flyout-toggle"><span> </span></a>
+		    <div class="flyout large right">
+		    	<div class="row">
+		    		<div class="twelve columns">
+		    			<strong>Task:</strong> <span id="current">None</span>
+		    		</div>
+		    	</div>
+		    </div>
+		  </li>
+		</ul>
+	</nav>
+  
+  <div class="row window" id="today">
+    <div class="twelve columns">
+			<h1>To Do Today</h1>
+			<div class="loader"></div>
+    </div>
+  </div>
+  
+  <div class="row window" id="proj_all">
+    <div class="twelve columns">
+			<h1>All Projects</h1>
+			<div class="loader"></div>
+    </div>
+  </div>
+  
+  <div class="row window" id="reports">
+    <div class="twelve columns">
+			<h1>Reports</h1>
+			<div class="loader"></div>
+    </div>
+  </div>
+  
+  <div class="row window" id="task_all">
+    <div class="twelve columns">
+			<h1>All Tasks</h1>
+			<div class="loader"></div>
+    </div>
+  </div>
+  
+  <div id="proj_new" class="row window">
+  	<div class="twelve columns">
+	    <h1>New Project</h1>
+	    <form id="new_proj" action="#" method="post">
+	    	<label>Project Name</label>
+	    	<input type="text" class="require" name="project"/>
+	    	<input type="submit" value="New Project" class="round button success"/>
+	    </form>
+   </div>
+  </div>
+  
+  <div id="proj_edit" class="row window">
+  	<div class="twelve columns">
+    	<h1>Edit Project</h1>
+    	<form id="edit_proj" action="#" method="post">
+	    	<label>Project Name</label>
+	    	<input type="text" class="require" name="project"/>
+	    	<input type="hidden" name="projectID" value=""/>
+	    	<input type="submit" value="Edit Project" class="round button success"/>
+	    </form>
+   </div>
+  </div>
+  
+  <div id="task_new" class="row window">
+  	<div class="twelve columns">
+    	<h1>New Task</h1>
+    	<form id="new_task" action ="#" method="post">
+    		<label>Task</label>
+    		<input type="text" class="require" name="task"/>
+    		<label>Project</label>
+    		<select name="projectID"></select>
+    		<label>Estimate</label>
+    		<input type="number" class="require" name="estimate"/>
+    		<label>Due Date</label>
+    		<input type="date" name="due_on"/>
+    		<label>Priority</label>
+    		<select name="priority">
+    			<option value="Normal">Normal</option>
+    			<option value="Urgent">Urgent</option>
+    			<option value="High">High</option>
+    			<option value="Low">Low</option>
+    		</select>
+    		<input type="submit" value="New Task" class="round button success"/>
+    	</form>
+   	</div>
+  </div>
+  
+  <div id="task_edit" class="row window">
+  	<div class="twelve columns">
+    	<h1>Edit Task</h1>
+    	<form id="edit_task" action ="#" method="post">
+    		<input type="hidden" name="taskID" value=""/>
+    		<label>Task</label>
+    		<input type="text" class="require" name="task"/>
+    		<label>Project</label>
+    		<select name="projectID"></select>
+    		<label>Estimate</label>
+    		<input type="number" class="require" name="estimate"/>
+    		<label>Due Date</label>
+    		<input type="date" name="due_on"/>
+    		<input type="submit" value="New Task" class="round button success"/>
+    	</form>
+   </div>
+  </div>
+  
+  
+  <div id="settings" class="row window">
+  	<div class="twelve columns">
+    	<h1>Settings</h1>
+   </div>
+  </div>
+  
+  <div id="loading" class="row window">
+  	<div class="four centered panel text-center">
+  		Loading &hellip;<br/>
+  		<img src="assets/images/loader.gif" alt="Loading..."/>
+  	</div>
+  </div>
+  
+  <!-- Audio -->
+  <audio id="tick" loop>
+  	<source src="assets/audio/ticking.mp3"></source>
+  	<source src="assets/audio/ticking.oog"></source>
+  	Does not support audio tag!
+  </audio>
+  <audio id="ding">
+  	<source src="assets/audio/ding.mp3"></source>
+  	<source src="assets/audio/ding.oog"></source>
+  	Does not support audio tag!
+  </audio>
+  <audio id="crank">
+  	<source src="assets/audio/crank.mp3"></source>
+  	<source src="assets/audio/crank.oog"></source>
+  	Does not support audio tag!
+  </audio>
+  
+  <!-- Javascript -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script src="assets/js/modernizr.foundation.js"></script>
+  <script src="assets/js/jquery.foundation.buttons.js"></script>
+  <script src="assets/js/jquery.foundation.forms.js"></script>
+  <script src="assets/js/jquery.foundation.navigation.js"></script>
+  <script src="assets/js/jquery.placeholder.js"></script>
+  <script src="assets/js/jquery.foundation.alerts.js"></script>
+  <script src="assets/js/jQuery.validity.min.js"></script>
+  <script src="assets/js/jquery.timer.js"></script>
+  <script src="assets/js/jquery.cookie.js"></script>
+  <script src="assets/js/jquery.total-storage.min.js"></script>
+  <script src="assets/js/jquery.datepick.min.js"></script>
+  <script src="assets/js/jquery.datepick.ext.min.js"></script>
+  <script src="assets/js/jquery.datepick.validation.min.js"></script>
+  <script src="assets/js/pomodoro.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
