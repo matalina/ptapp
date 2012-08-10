@@ -148,15 +148,42 @@
     		<input type="number" class="require" name="estimate"/>
     		<label>Due Date</label>
     		<input type="date" name="due_on"/>
-    		<input type="submit" value="New Task" class="round button success"/>
+    		<label>Priority</label>
+    		<select name="priority">
+    			<option value="Normal">Normal</option>
+    			<option value="Urgent">Urgent</option>
+    			<option value="High">High</option>
+    			<option value="Low">Low</option>
+    		</select>
+    		<input type="submit" value="Edit Task" class="round button success"/>
     	</form>
    </div>
   </div>
   
-  
   <div id="settings" class="row window">
   	<div class="twelve columns">
     	<h1>Settings</h1>
+    	<form id="setting_form" action="#" method="post">
+    		<label>Task Time</label>
+    		<input type="number" name="task_time" />
+    		<label>Short Break</label>
+    		<input type="number" name="short_break" />
+    		<label>Long Break</label>
+    		<input type="number" name="long_break" />
+    		<label>
+    			Wind Sound
+    			<input type="checkbox" name="wind_sound" />
+    		</label>
+    		<label>
+    			Alarm Sound
+    			<input type="checkbox" name="ding_sound" />
+    		</label>
+    		<label>
+    			Tick Sound
+    			<input type="checkbox" name="tick_sound" />
+    		</label>
+    		<input type="submit" value="Change Settings" class="round success button"/>
+    	</form>
    </div>
   </div>
   

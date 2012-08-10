@@ -22,11 +22,9 @@
     else {
       loadStorage('#today');
     }
-    
-    
-    // Get Settings
+   
+    // Set Settings
     Settings.init();
-    var settings = Settings.get();
     
     // Navigation
     $('nav').on('click','a',function () {
@@ -73,7 +71,7 @@
           var taskID = todolist[id],
             temp = tasks[taskID];
           if(tasks.hasOwnProperty(taskID)) {
-            $table.append('<tr><td>' + taskID + '</td><td>' + (temp['completed_on'] == null?'':'&#10004;') + '</td><td>' + temp['priority'] + '</td><td><strong>' + temp['task'] + '</strong> in ' + projects[temp['projecttID']] + '</td><td>' + temp['estimate'] + '</td><td>' + temp['due_on'] + '</td><td><a href="#pomodoro."' + taskID + '" class="tiny round success button">Track</a> <a href="#done.' + taskID +'" class="tiny round button">Complete</a></td></tr>')
+            $table.append('<tr><td>' + taskID + '</td><td>' + (temp['completed_on'] == null?'':'&#10004;') + '</td><td>' + temp['priority'] + '</td><td><strong>' + temp['task'] + '</strong> in ' + projects[parseInt(temp['projectID'])] + '</td><td>' + temp['estimate'] + '</td><td>' + temp['due_on'] + '</td><td><a href="#pomodoro."' + taskID + '" class="tiny round success button">Track</a> <a href="#done.' + taskID +'" class="tiny round button">Complete</a></td></tr>')
           }
         }
         $table.append('</tbody>');
@@ -107,7 +105,7 @@
           var temp = tasks[taskID];
           
           if(tasks.hasOwnProperty(taskID)) {
-            $table.append('<tr><td>' + taskID + '</td><td>' + (temp['completed_on'] == null?'':'&#10004;') + '</td><td>' + temp['priority'] + '</td><td><strong>' + temp['task'] + '</strong> in ' + projects[temp['projecttID']] + '</td><td>' + temp['estimate'] + '</td><td>' + temp['due_on'] + '</td><td><a href="#task_edit.' + taskID + '" class="button round tiny success">Edit</a> <a href="#task_delete.' + taskID + '" class="button round tiny alert">Delete</a> ' + (temp['completed_on'] == null && $.inArray(parseInt(taskID), todolist) == -1?'<a href="#add.' + taskID + '" class="round tiny button"">Add To Do Today</a>':'') + '</td></tr>')
+            $table.append('<tr><td>' + taskID + '</td><td>' + (temp['completed_on'] == null?'':'&#10004;') + '</td><td>' + temp['priority'] + '</td><td><strong>' + temp['task'] + '</strong> in ' + projects[parseInt(temp['projectID'])] + '</td><td>' + temp['estimate'] + '</td><td>' + temp['due_on'] + '</td><td><a href="#task_edit.' + taskID + '" class="button round tiny success">Edit</a> <a href="#task_delete.' + taskID + '" class="button round tiny alert">Delete</a> ' + (temp['completed_on'] == null && $.inArray(parseInt(taskID), todolist) == -1?'<a href="#add.' + taskID + '" class="round tiny button"">Add To Do Today</a>':'') + '</td></tr>')
           }
         }
         $table.append('</tbody>');
@@ -118,6 +116,21 @@
         var projects = Project.get(),
           options = dropdown(projects,'id','value',null);
         $(page + ' select[name=projectID]').html(options);
+      case '#settings':
+        var settings = Settings.get();
+        $(page + ' input[name=task_time]').val(settings['task_time']);
+        $(page + ' input[name=short_break]').val(settings['short_break']);
+        $(page + ' input[name=long_break]').val(settings['long_break']);
+        if(settings['wind_sound']) {
+          $(page + ' input[name=wind_sound]').attr('checked','checked');
+        }
+        if(settings['ding_sound']) {
+          $(page + ' input[name=ding_sound]').attr('checked','checked');
+        }
+        if(settings['tick_sound']) {
+          $(page + ' input[name=tick_sound]').attr('checked','checked');
+        }
+        break;
       default:
         break;
     }
@@ -190,20 +203,40 @@
             completed_on: null
           };
           Task.set(new_task);
-          $('#' + form_id).prepend('<div class="alert-box success">Project Added.</div>').find('.alert-box').delay(10000).fadeOut('fast');
+          $('#' + form_id).prepend('<div class="alert-box success">Task Added.</div>').find('.alert-box').delay(10000).fadeOut('fast');
           $('#' + form_id + ' input:not([type=submit])').val('');
           var projects = Project.get(),
             options = dropdown(projects,'id','value',null);
           $('#' + form_id + ' select[name=projectID]').html(options);
-          console.log(Task.get());
           break;
         case 'edit_task':
-          var task = new Task,
-            update_task = new Array();
-          task.set(obj);
+          var new_task = {
+            task: $('#' + form_id + ' input[name=task]').val(),
+            projectID: $('#' + form_id + ' [name=projectID]').val(),
+            estimate: $('#' + form_id + ' input[name=estimate]').val(),
+            due_on: $('#' + form_id + ' input[name=due_on]').val(),
+            priority: $('#' + form_id + ' [name=priority]').val(),
+            completed_on: null,
+            taskID: parseInt($('#' + form_id + ' [name=taskID]').val()),
+          };
+          Task.set(new_task);
+          $('#' + form_id).prepend('<div class="alert-box success">Task Updated.</div>').find('.alert-box').delay(10000).fadeOut('fast');
+          var projects = Project.get(),
+            options = dropdown(projects,'id','value',null);
+          $('#' + form_id + ' select[name=projectID]').html(options);
           break;
-        case 'setting':
-          
+        case 'setting_form':
+          var settings = {
+            task_time: $('#' + form_id + ' input[name=task_time]').val(),
+            short_break: $('#' + form_id + ' input[name=short_break]').val(),
+            long_break: $('#' + form_id + ' input[name=long_break]').val(),
+            wind_sound: $('#' + form_id + ' input[name=wind_sound]').attr('checked') == 'checked'?true:false,
+            ding_sound: $('#' + form_id + ' input[name=ding_sound]').attr('checked') == 'checked'?true:false,
+            tick_sound: $('#' + form_id + ' input[name=tick_sound]').attr('checked') == 'checked'?true:false,
+          };
+          Settings.set(settings);
+          Settings.init();
+          $('#' + form_id).prepend('<div class="alert-box success">Settings Updated.</div>').find('.alert-box').delay(10000).fadeOut('fast');
           break;
         default:
           break;
@@ -244,6 +277,27 @@
           Today.set(id);
           loadStorage('#today');
           $('#today').css('display','inherit');
+          break;
+        case '#task_edit':
+          var taskID = id;
+          var tasks = Task.get(),
+            task = tasks[taskID],
+            projects = Project.get(),
+            options = dropdown(projects,'id','value',parseInt(task['projectID']));
+          $('#edit_task select[name=projectID]').html(options);
+          $('#edit_task input[name=task]').val(task['task']);
+          $('#edit_task input[name=taskID]').val(taskID);
+          $('#edit_task select[name=priority] option[value=' + parseInt(task['projectID']) + ']').attr('selected','selected');
+          $('#edit_task input[name=due_on]').val(task['due_on']);
+          $('#edit_task input[name=estimate]').val(task['estimate']);
+          break;
+        case '#task_delete':
+          var check = confirm("Are you sure?");
+          if(check) {
+            Task.remove(id);
+            loadStorage('#task_all');
+            $('#task_all').css('display','inherit');
+          }
           break;
         default:
           break;

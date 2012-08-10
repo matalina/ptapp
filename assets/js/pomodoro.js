@@ -9,18 +9,19 @@ var Settings = {
   init: function () {
     var settings = $.totalStorage('settings');
     if(settings != null) {
-      this.task_time = settings.task_time;
-      this.short_break = settings.short_break;
-      this.long_break  = settings.long_break;
-      this.wind_sound = settings.wind_sound;
-      this.tick_sound = settings.tick_sound;
-      this.ding_sound = settings.ding_sound;
+      this.task_time = settings['task_time'];
+      this.short_break = settings['short_break'];
+      this.long_break  = settings['long_break'];
+      this.wind_sound = settings['wind_sound'];
+      this.tick_sound = settings['tick_sound'];
+      this.ding_sound = settings['ding_sound'];
     }
   },
   set: function (obj) {
     $.totalStorage('settings', obj);
   },
   get: function () {
+    this.init();
     var obj = {
       task_time: this.task_time,
       short_break: this.short_break,
@@ -70,17 +71,17 @@ var Project = {
   },
   remove : function(projectID) {
     var projects = this.get();
-      //tasks = Task.get();
+      tasks = Task.get();
     
     delete projects[projectID];
     
-    /*for(var taskID in tasks) {
+    for(var taskID in tasks) {
       if(tasks.hasOwnProperty(taskID)) {
-        if(tasks[taskID][3] == projectID) {
-          task.remove(taskID);
+        if(tasks[taskID]['projectID'] == projectID) {
+          Task.remove(taskID);
         }
       }
-    }*/
+    }
     
     $.totalStorage('projects',projects);
   },
@@ -95,8 +96,8 @@ var Task = {
   set : function (obj) {
     var tasks = this.get(),
       newID, taskID; 
-    if(!obj.taskID) {
-      if(tasks != null) {
+    if(!obj['taskID']) {
+      if(tasks != null && !$.isEmptyObject(tasks)) {
         for(var taskID in tasks) {
           if(tasks.hasOwnProperty(taskID)) {
             newID = parseInt(taskID) + 1;
@@ -109,9 +110,9 @@ var Task = {
       }
     }
     else {
-      taskID = obj.taskID;
-      delete obj.taskID;
-      tasks[obj.taskID] = obj;
+      taskID = obj['taskID'];
+      delete obj['taskID'];
+      tasks[taskID] = obj;
     }
     
     $.totalStorage('tasks',tasks);
